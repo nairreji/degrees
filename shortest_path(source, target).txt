@@ -1,0 +1,66 @@
+def shortest_path(source, target):
+    """
+    Returns the shortest list of (movie_id, person_id) pairs
+    that connect the source to the target.
+
+    If no possible path, returns None.
+    """
+    tactor="a"+target
+    frontier=["a"+source]
+    DeletedFromFrontier=[]
+    xpath=[]
+    x=0
+    trips=0
+    movs=[]
+    acts=[]
+    while (x==0): 
+        mov_act = frontier[len(frontier)-1]
+        frontier=frontier[0:len(frontier)-1]
+        # mov_act = frontier[0]
+        # frontier=frontier[1:len(frontier)]    
+        DeletedFromFrontier+=[mov_act]   
+        ftype=mov_act[0]
+        if ftype=='m':
+            lmovie=mov_act[1:]
+        else:
+            lactor=mov_act[1:]
+        mov_act=mov_act[1:]
+        trips=trips+1
+        if ftype=="a":
+            movs=people[mov_act]["movies"]
+            movs=sorted(movs)
+            for m in movs:
+                if any(lactor in i for i in xpath):
+                   s=0 
+                else:
+                    xpath=xpath+[[m,lactor]]   
+            movs = ["m" + a for a in movs]
+            for m in movs:
+                if m not in frontier:
+                    frontier=frontier + [m]
+        else:
+            acts=movies[mov_act]["stars"]
+            acts=sorted(acts)
+            if tactor[1:] in acts:
+                xpath=xpath + [[mov_act,lactor]]
+                xpath=xpath+[[mov_act,tactor[1:]]]                 
+                break
+            for a in acts:
+                if any(a in i for i in xpath):
+                    s=0
+                else:
+                    xpath=xpath+[[lmovie,a]]   
+            acts = ["a" + a for a in acts]
+            for a in acts:
+                if a not in frontier:
+                    frontier=frontier + [a]
+        frontier = [i for i in frontier if i not in DeletedFromFrontier]
+        # frontier.sort()
+        # print(frontier)
+        if tactor in frontier:
+            print(trips)
+            print(frontier)
+            x=1
+            break
+    xpath=xpath[1:]
+    return xpath
